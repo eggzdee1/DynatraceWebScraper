@@ -11,24 +11,45 @@ url = "https://community.dynatrace.com"
 options = Options()
 driver = webdriver.Chrome(options=options)
 driver.get(url)
-time.sleep(2)
+time.sleep(1)
 '''for i in range(30):
     driver.find_element(By.ID, "custom-loader-button").click()
     time.sleep(0.2)'''
-page = driver.page_source
+homeSource = driver.page_source
 
 
-soup = BeautifulSoup(page, 'lxml')
+homeSoup = BeautifulSoup(homeSource, 'lxml')
 
-posts = soup.find_all("div", class_ = "custom-message-header")
+posts = homeSoup.find_all("div", class_ = "custom-message-header")
 links = []
 for post in posts:
-    links.append(post.find("a")["href"])
+	links.append(post.find("a")["href"])
 
 
+questions = []
+topResponses = []
 for link in links:
-    postLink = url + link
-    driver.get(postLink)
+	postLink = url + link
+	driver.get(postLink)
+	time.sleep(0.5)
+	postSource = driver.page_source
+	postSoup = BeautifulSoup(postSource, 'lxml')
+
+	comments = postSoup.find_all("div", class_ = "lia-message-body-content")
+	if len(comments) < 2: continue
+
+	'''questionRaw = comments[0].find_all()
+	#print(questionRaw)
+	questionText = ""
+	for paragraph in questionRaw:
+		questionText += "".join(paragraph.findAll(string = True)) + "\n"'''
+	question = "".join(comments[0].findAll(string=True))
+	response = "".join(comments[1].findAll(string=True))
+	questions.append(question)
+	topResponses.append(response)
+
+print(len(questions))
+print(len(topResponses))
 
 
 driver.quit()
