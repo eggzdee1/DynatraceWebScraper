@@ -1,0 +1,94 @@
+
+I am fairly good with the Dynatrace API V2 and with Data Explorer. However, pulling OpenShift statistics in Dynatrace is still a challenge to me.My question is - Can you pull OpenShift service statistics by Kubernetes namespace?It works fine if I do it by tag and service name.builtin:service.response.time:filter(and(and(in("dt.entity.service",entitySelector("type(service),tag(~"OpenShift Namespace:blah-blah~")")),in("dt.entity.service",entitySelector("type(service),entityName.contains(~"blah-blah-service-1~")"))))):splitBy("dt.entity.service"):avg:sort(value(avg,descending)):limit(20)Any help greatly appreciated.Lou
+
+----------------
+
+So yeah, very simple query that I pretty much copied from the Grail Examples in the Dynatrace documentation: timeseries usage=avg(dt.host.cpu.usage),
+    by:{dt.entity.host},
+    filter:{
+      dt.entity.host in [
+       fetch dt.entity.host
+      | fieldsAdd hostGroupName
+      | filter hostGroupName == "HOST_GROUP_A"
+      | fields id
+       ]
+    }  That returns back the two hosts in that host group along with their entityId as the names.  However, if I change the | fields id line to | fields entity.name  I get no results... I changed nothing else other than that line.  Why in the world can I not get the name of the hosts instead? If I do a simple query like this: fetch dt.entity.host
+| filter hostGroupName == "HOST_GROUP_A" I get back the two hosts in that group and it shows that each host has two fields, entity.name and id.  So why can't I use entity.name in the fields line?I even tried doing a fieldsAdd entity.name and that doesn't work either.  I tried putting the fieldsAdd both inside of and outside of the filter block, but nothing works.  I get no results if I don't use id.  But who wants to have id on the charts?  Nobody will know which host is which...
+
+
+
+					
+						Solved!
+					
+					Go to Solution.
+
+
+
+
+----------------
+
+Anyone having issues with Dynatrace RUM v1.269.140.20230629-182852 & Chrome v117.0.5938.132 or MS Edge v117.0.5938.150 
+
+----------------
+
+I need to run a query with 3 conditions for the ":filter" command, and I am having a hard time with the syntax.This is the base query that I am working off of:1    builtin:tech.generic.mem.workingSetSize2    :filter(in("dt.entity.process_group_instance",entitySelector("type(process_group_instance),entityName(~"Oracle Database~")")))3    :parents:splitBy("dt.entity.host"):avg:sort(value(avg,descending))4    :filter(in("dt.entity.host", entitySelector("type(~"HOST~"),tag(~"TYPE:Oracle Database Server~")")))It returns all results without any issues, but I need to add another condition for filtering. I have built the condition separately and I have tried to add the line below, to no avail:5    :filter(in("dt.entity.host", entitySelector("type(~"HOST~"),tag(~"Capability:Global Money Transfer~")")))I am assuming that there might be a conflict between the multiple ":filter" instances and the way around would be using the AND operator, but I am struggling so hard with the syntax that I was hoping to get a little guidance from the community.
+
+----------------
+
+Hey,
+I am now deciding whether to use metrics API or DQL to query metrics.  But now, I am facing a problem that I can't find some metrics using DQL. (e.g. builtin:host.cpu.load15m)
+Is that all metrics that can be queried by metrics selector can also be use DQL to query?
+ 
+Thanks. 
+
+
+
+					
+						Solved!
+					
+					Go to Solution.
+
+
+
+
+----------------
+
+how do we move licence  from Dynatrace QA environment to Load environment.
+
+
+
+					
+						Solved!
+					
+					Go to Solution.
+
+
+
+
+----------------
+
+Hi, we are instrumenting an android app with the dynatrace SDK version: 8.273.1.1003 (https://www.dynatrace.com/support/help/platform-modules/digital-experience/mobile-applications/instr...)Due to technical limitations on networking, we would like to limit the monitor only to the actions set in the code in this way:DTXAction webAction = Dynatrace.enterAction("ACTION NAME");(https://www.dynatrace.com/support/help/platform-modules/digital-experience/mobile-applications/instr...) Unfortunately, we are still seeing actions not set such as this:Loading SmartphoneHomeActivityLoading FAST Pax StagingTouch on LinearLayoutTouch on ImageViewIn this link:https://www.dynatrace.com/support/help/shortlink/oneagent-sdk-for-android#disable-lifecycle-monitori...We have seen that is possible to disable the Automatic monitor of the app but is not working.There are any configurations that we need to set to achieve the result? 
+
+----------------
+
+Hi! Is it possible to read and write an AppState from the workflow level? As for now, I am receiving an error (code 541). Thank you!
+
+----------------
+
+Hello,As we all know you can turn features within oneAgent on and off,  But one level deeper, is it possible to find out what methods Dynatrace injects and or is it possible to exclude a specific method?(I can imagine that above is simply internal) KR Henk
+
+
+
+					
+						Solved!
+					
+					Go to Solution.
+
+
+
+
+----------------
+
+I'm trying to run a query using Data Explorer that involves 2 separate metrics. The reason for this is because I want the different metrics to have differing thresholds. However, it will only let me run the query for 1 metric at a time, not both in conjunction, even though both are the same, just looking at different applications. Is there a solution or way of being able to run 2 metrics together at the same time using a honeycomb in Data Explorer?
+
+----------------

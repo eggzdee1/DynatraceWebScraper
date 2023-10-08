@@ -43,13 +43,24 @@ for link in links:
 	questionText = ""
 	for paragraph in questionRaw:
 		questionText += "".join(paragraph.findAll(string = True)) + "\n"'''
+	#questionRaw = comments[0].find_all(["p", "pre"])
+	#responseRaw = comments[1].find_all(["p", "pre"])
+	#question = ""
+	#response = ""
+	#for paragraph in questionRaw:
 	question = "".join(comments[0].findAll(string=True))
+	#for paragraph in responseRaw:
 	response = "".join(comments[1].findAll(string=True))
 	questions.append(question)
 	topResponses.append(response)
 
-print(len(questions))
-print(len(topResponses))
+outQuestions = open("Questions.txt", "w", encoding='utf-8')
+outResponses = open("Responses.txt", "w", encoding='utf-8')
+for i in range(len(questions)):
+	outQuestions.write(questions[i] + "\n----------------\n")
+	outResponses.write(topResponses[i] + "\n----------------\n")
+outQuestions.close()
+outResponses.close()
 
 
 driver.quit()
