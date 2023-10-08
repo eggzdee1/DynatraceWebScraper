@@ -1,4 +1,3 @@
-#First you need to download chromedriver (search it up) and put it into your Windows folder
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -7,14 +6,13 @@ import time
 
 url = "https://community.dynatrace.com"
 
-#Open a Chrome window, scroll down a bunch, pull the HTML, and exit
 options = Options()
 driver = webdriver.Chrome(options=options)
 driver.get(url)
 time.sleep(1)
-'''for i in range(30):
+for i in range(30):
     driver.find_element(By.ID, "custom-loader-button").click()
-    time.sleep(0.2)'''
+    time.sleep(0.2)
 homeSource = driver.page_source
 
 
@@ -27,7 +25,7 @@ for post in posts:
 
 
 questions = []
-topResponses = []
+allResponses = []
 for link in links:
 	postLink = url + link
 	driver.get(postLink)
@@ -38,29 +36,23 @@ for link in links:
 	comments = postSoup.find_all("div", class_ = "lia-message-body-content")
 	if len(comments) < 2: continue
 
-	'''questionRaw = comments[0].find_all()
-	#print(questionRaw)
-	questionText = ""
-	for paragraph in questionRaw:
-		questionText += "".join(paragraph.findAll(string = True)) + "\n"'''
-	#questionRaw = comments[0].find_all(["p", "pre"])
-	#responseRaw = comments[1].find_all(["p", "pre"])
-	#question = ""
-	#response = ""
-	#for paragraph in questionRaw:
 	question = "".join(comments[0].findAll(string=True))
-	#for paragraph in responseRaw:
-	response = "".join(comments[1].findAll(string=True))
+	responses = []
+	for i in range(1, len(comments)):
+		responses.append("".join(comments[i].findAll(string=True)))
 	questions.append(question)
-	topResponses.append(response)
+	allResponses.append(responses)
 
 outQuestions = open("Questions.txt", "w", encoding='utf-8')
 outResponses = open("Responses.txt", "w", encoding='utf-8')
 for i in range(len(questions)):
-	outQuestions.write(questions[i] + "\n----------------\n")
-	outResponses.write(topResponses[i] + "\n----------------\n")
+	outQuestions.write(str(i + 1) + ":\n" + questions[i] + "\n----------------\n")
+	for j in range(len(allResponses[i])):
+		outResponses.write(str(i + 1) + "." + str(j + 1) + ":\n" + allResponses[i][j] + "\n----------------\n")
 outQuestions.close()
 outResponses.close()
+
+print(len(questions))
 
 
 driver.quit()
