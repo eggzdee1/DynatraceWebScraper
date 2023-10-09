@@ -44,13 +44,13 @@ for link in links:
 	allResponses.append(responses)
 
 outQuestions = open("Questions.txt", "w", encoding='utf-8')
-outResponses = open("Responses.txt", "w", encoding='utf-8')
+#outResponses = open("Responses.txt", "w", encoding='utf-8')
 for i in range(len(questions)):
 	outQuestions.write(str(i + 1) + ":\n" + questions[i] + "\n----------------\n")
 	for j in range(len(allResponses[i])):
-		outResponses.write(str(i + 1) + "." + str(j + 1) + ":\n" + allResponses[i][j] + "\n----------------\n")
+		outQuestions.write(str(i + 1) + "." + str(j + 1) + ":\n" + allResponses[i][j] + "\n----------------\n")
 outQuestions.close()
-outResponses.close()
+#outResponses.close()
 
 print(len(questions))
 
